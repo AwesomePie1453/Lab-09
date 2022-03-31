@@ -1,7 +1,7 @@
 ---
 title: "Lab 09 - Grading the professor, Pt. 1"
-author: "Insert your name here"
-date: "Insert date here"
+author: "Alex Connolly"
+date: "03/22/22"
 output: github_document
 ---
 
@@ -15,16 +15,50 @@ library(openintro)
 
 ### Exercise 1
 
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+```{r distro}
+evals %>%
+  ggplot(mapping = aes(x=score)) + geom_histogram()
+```
+
+This is skewed. Students rate courses generally higher. This is not that unexpected, given how most of my evals I tend to land on 4 or 5, and only the really bad professors/courses get 1-2s.
+
+
 
 ### Exercise 2
 
-...
 
-Add exercise headings as needed.
+```{r scatter}
+evals %>%
+  ggplot(mapping = aes(x=bty_avg, y=score)) + geom_point()
+```
+Honestly, this doesn't look that representative. There are plenty of "ugly" professors who peoplestill rated highly, and plenty of "beautiful" professors that got medicore scores. There aren't many awful scores that got high beauty ratings though. 
+
+### Excersise 3
+
+```{r jitter}
+evals %>%
+  ggplot(mapping = aes(x=bty_avg, y=score)) + geom_jitter()
+```
+Jitter adds a small amount of variation to location of each point, so you can see points that otherwise were on top of each other. In the original scatterplot, it appears as if there are many points that are the exact same point on the graph, so the original graph only shows them each once. 
+
+### Exercise 4
+
+
+```{r linear}
+m_bty <- lm(score ~ bty_avg, data=evals)
+
+print(m_bty)
+
+summary(m_bty)
+```
+
+```{r plot}
+evals %>%
+  ggplot(mapping = aes(x=bty_avg, y=score)) + geom_jitter()
+```
+
+
+
 
 ## 
 For Exercise 12, relevel() function can be helpful! 
