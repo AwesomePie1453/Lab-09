@@ -31,7 +31,8 @@ This is skewed. Students rate courses generally higher. This is not that unexpec
 evals %>%
   ggplot(mapping = aes(x=bty_avg, y=score)) + geom_point()
 ```
-Honestly, this doesn't look that representative. There are plenty of "ugly" professors who peoplestill rated highly, and plenty of "beautiful" professors that got medicore scores. There aren't many awful scores that got high beauty ratings though. 
+
+Honestly, this doesn't look that representative. There are plenty of "ugly" professors who people still rated highly, and plenty of "beautiful" professors that got medicore scores. There aren't many awful scores that got high beauty ratings though. 
 
 ### Excersise 3
 
@@ -52,13 +53,98 @@ print(m_bty)
 summary(m_bty)
 ```
 
+### Exercise 5
+
+
 ```{r plot}
 evals %>%
-  ggplot(mapping = aes(x=bty_avg, y=score)) + geom_jitter()
+  ggplot(mapping = aes(x=bty_avg, y=score)) + 
+  geom_point() + geom_jitter() + geom_smooth(method = lm, color = "orange", se = FALSE)
+```
+### Exercise 6
+
+The slope of the linear model is .06664, so for every point that the attractivvenss rating of the professor goes up, their score increases by .06664. 
+
+### Exercise 7
+
+The intercept is 3.88034, so when the attractiveness of the professor is rated 0, their score is a 3.88034. That makes sensewith this data, the averageish score. 
+
+### Exercise 8
+
+The R squared of this model is .03502, meaning that 3.5% of the variance in score is determined by 
+beauty rating.
+
+### Exercise 9
+
+```{r gen}
+m_gen <- lm(score ~ gender, data=evals)
+
+print(m_gen)
+
+summary(m_gen)
+```
+
+### Exercise 10
+
+for males, y = 4.09282 + (1 * .14151)
+females, y = 4.09282 + (0 * .14151)
+
+
+### Exercise 11
+
+
+```{r rank}
+m_rank <- lm(score ~ rank, data=evals)
+
+print(m_rank)
+
+summary(m_rank)
+```
+
+Teaching track, y = 4.28431 - 0
+Tenure track, y = 4.28431 - .1297
+Tenured, y = 4.28431 - .1452
+
+4.28431 is the professors score at level 0, teaching track
+-.1297 is how much a score decreases at the tenure track
+-.1452 is how much the score decreases if they are tenured
+
+### Exerise 12
+
+```{r rank_relevels}
+evals_rank_relevel <- evals %>%
+  mutate(rank_relevel = relevel(rank, ref = "tenure track"))
+  
+```
+
+### Exercise 13
+
+```{r relevel}
+m_rank_relevel <- lm(score ~ rank_relevel, data=evals_rank_relevel)
+summary(m_rank_relevel)
+```
+Y = 4.15463 + .12968x -.01550z
+4.1563 is what a professors score will be in the tenure track
+.12968 is how much a score will increase in teaching track
+-.01550 is how much a score will increase when tenureed
+R squared is .007332, implying that this new model explains .7% of the variance in score
+
+### Exercise 14
+
+```{r elligible}
+evals <- evals %>%
+  mutate(tenure_eligible = recode(rank, "tenure track" = "yes", "tenured" = "yes", "teaching" = "no"))
 ```
 
 
 
+### Exercise 15
+```{r new}
+m_tenure_eligible <- lm(score ~ tenure_eligible, data=evals)
+summary(m_tenure_eligible)
+```
 
-## 
-For Exercise 12, relevel() function can be helpful! 
+y = 4.2843 - .1406x
+4.2843, the score for those who are not tenure eligible
+.1406 is how muh you decrease when they are tenure eligible
+R squared is .00932, which means this explains .932% of the variation in the data
